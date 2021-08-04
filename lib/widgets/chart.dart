@@ -29,11 +29,12 @@ class Chart extends StatelessWidget {
         'day': DateFormat.E().format(weekDay).substring(0, 1),
         'amount': totalSum
       };
-    });
+    }).reversed.toList();
   }
 
-  double get maxSpending{
+  double get totalSpending {
     return groupedTransactionValues.fold(0.0, (sum, item) {
+      return sum + item['amount'];
     });
   }
 
@@ -43,8 +44,18 @@ class Chart extends StatelessWidget {
       elevation: 6,
       margin: EdgeInsets.all(20),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: groupedTransactionValues.map((data) {
-          return ChartBar(data['day'], data['amount'],, spendingPctOfTotal)
+          return Flexible(
+            fit: FlexFit.tight,
+            child: ChartBar(
+                data['day'],
+                data['amount'],
+                totalSpending == 0
+                    ? 0
+                    : (data['amount'] as double) / totalSpending),
+          );
         }).toList(),
       ),
     );
